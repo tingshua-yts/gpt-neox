@@ -29,6 +29,9 @@ from megatron.mpu import set_model_parallel_rank, set_model_parallel_world_size
 
 import deepspeed
 import inspect
+import socket
+import logging
+logging.basicConfig(format='[%(asctime)s] %(filename)s %(funcName)s():%(lineno)i [%(levelname)s] %(message)s', level=logging.DEBUG)
 
 
 def initialize_megatron(neox_args, allow_no_cuda=False):
@@ -118,7 +121,6 @@ def setup_deepspeed_random_and_activation_checkpointing(neox_args):
 
 def _initialize_distributed(neox_args):
     """Initialize torch.distributed and mpu."""
-
     device_count = torch.cuda.device_count()
     if torch.distributed.is_initialized():
 
@@ -130,6 +132,7 @@ def _initialize_distributed(neox_args):
             )
         neox_args.rank = torch.distributed.get_rank()
         neox_args.world_size = torch.distributed.get_world_size()
+        logging.info(f"gpt neoX wold_size in is_initialized:{neox_args.world_size}")
 
     else:
 
@@ -145,13 +148,15 @@ def _initialize_distributed(neox_args):
             else:
                 neox_args.local_rank = device
             torch.cuda.set_device(device)
-
         deepspeed.init_distributed(
             dist_backend=neox_args.distributed_backend,
             auto_mpi_discovery=True,
             distributed_port=os.getenv("MASTER_PORT", "6000"),
             verbose=True,
         )
+        neox_args.world_size = torch.distributed.get_world_size()
+        neox_args.rank = torch.distributed.get_rank()
+        logging.info(f"pid: {os. getpid()} rank: {neox_args.rank} gpt neoX wold_size in init:{neox_args.world_size} at {socket.gethostname()}")
 
     # Setup 3D topology.
     pp = neox_args.pipe_parallel_size if neox_args.pipe_parallel_size >= 1 else 1
