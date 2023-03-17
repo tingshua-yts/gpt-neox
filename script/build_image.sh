@@ -1,1 +1,1 @@
-docker build -f Dockerfile  -t ai-studio-registry.cn-beijing.cr.aliyuncs.com/kube-ai/gpt-neox:0.0.1 .
+docker build -f Dockerfile  -t ai-studio-registry-vpc.cn-beijing.cr.aliyuncs.com/kube-ai/gpt-neox:0.0.2 .
