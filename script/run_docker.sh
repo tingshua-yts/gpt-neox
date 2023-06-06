@@ -1,7 +1,7 @@
 #!/bin/bash
 set -x
 name=gpt
-image=ai-studio-registry-vpc.cn-beijing.cr.aliyuncs.com/kube-ai/gpt-neox:0.0.1
+image=ai-studio-registry-vpc.cn-beijing.cr.aliyuncs.com/kube-ai/gpt-neox:0.0.2
 flag=$(sudo docker ps  | grep "$name" | wc -l)
 if [ $flag == 0 ]
 then

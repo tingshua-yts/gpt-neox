@@ -17,6 +17,7 @@
 
 """Megatron initialization."""
 
+import datetime
 import random
 import os
 
@@ -153,6 +154,7 @@ def _initialize_distributed(neox_args):
             auto_mpi_discovery=True,
             distributed_port=os.getenv("MASTER_PORT", "6000"),
             verbose=True,
+            timeout=datetime.timedelta(seconds=30),
         )
         neox_args.world_size = torch.distributed.get_world_size()
         neox_args.rank = torch.distributed.get_rank()
